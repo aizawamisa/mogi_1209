@@ -20,9 +20,11 @@
 
 ## ER 図
 
-![Alt text](img/ER.png)
+![Alt text](storage/img/ER.png)
 
 ## URL
+
+https://github.com/aizawamisa/mogi_1209.git
 
 ## 環境構築
 
@@ -30,7 +32,7 @@
 
 ### クローン
 
-$ git clone https://github.com/aizawamisa/flea.git
+$ git clone https://github.com/aizawamisa/mogi_1209.git
 
 ### Docker 起動
 
