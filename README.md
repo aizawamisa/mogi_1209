@@ -20,7 +20,8 @@
 
 ## ER 図
 
-![Alt text](storage/img/ER.png)
+![ER Diagram](public/img/ER.png)
+
 
 ## URL
 
