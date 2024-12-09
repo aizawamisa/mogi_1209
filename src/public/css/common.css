@@ -1,0 +1,21 @@
+body {
+    background: #F8F8F8;
+}
+
+.header {
+    background: #FFFFFF;
+    width: 1512px;
+}
+
+.header__inner {
+    height: 53px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #F4F4F4;
+    display: flex;
+    align-items: center;
+
+}
+
+.header__logo {
+    color: #F5C800;
+}

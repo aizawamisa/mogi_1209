@@ -8,7 +8,7 @@
 <div class="content">
     <form class="form" action="{{ route('update', $product->id) }}" method="post" enctype="multipart/form-data">
         @csrf
-        @method('patch')
+        @method('put')
         <input type="hidden" name="id" value="{{ $product->id }}">
         <div class="product">
             <p class="product-route">
@@ -16,19 +16,22 @@
             </p>
             <div class="product-detail">
                 <div class="product-img">
-                    <img src="{{ asset('storage/app/public/img/fruit-img/' . $product->image) }}">
-                    <input type="file" name="image"
-                        value="{{ asset('storage/app/public/img/fruit-img/' . $product->image) }}">
+                    <img id="preview-image" src="{{ url('storage/img/fruit-img/' . $product->image) }}?v={{ time() }}" alt="{{ $product->name }}" style="max-width: 300px; max-height: 300px;">
+                    <input id="image-upload" type="file" name="image" style="display:none;" accept="image/*">
+                    <label for="image-upload" class="custom-file-upload">ファイルを選択</label>
+                    <span id="file-name">{{ $product->image }}</span>
+                    <!-- <input type="file" name="image"
+                        value="{{ url('storag/img/fruit-img/' . $product->image) }}"> -->
                 </div>
                 <div class="form-error">
-                    @error('img')
+                    @error('image')
                         {{ $message }}
                     @enderror
                 </div>
                 <div class="product-txt">
                     <div class="product-input__txt">
                         <P class="input-label">商品名</P>
-                        <input type="text" name="name" value="{{ $product->name }}" placeholder="商品名を入力">
+                        <input type="text" name="name" value="{{ old('name',$product->name) }}" placeholder="商品名を入力">
                     </div>
                     <div class="form-error">
                         @error('name')
@@ -37,7 +40,7 @@
                     </div>
                     <div class="product-input__txt">
                         <p class="input-label">値段</p>
-                        <input type="text" name="price" value="{{ $product->price }}" placeholder="値段を入力">
+                        <input type="text" name="price" value="{{ old('price', $product->price) }}" placeholder="値段を入力">
                     </div>
                     <div class="form-error">
                         @error('price')
@@ -47,10 +50,10 @@
                     <div class="product-input__txt">
                         <p class="input-label">季節</p>
                         <div class="product-input__check-box">
-                            <input type="checkbox" name="season_id[]" value="1">春
-                            <input type="checkbox" name="season_id[]" value="2">夏
-                            <input type="checkbox" name="season_id[]" value="3">秋
-                            <input type="checkbox" name="season_id[]" value="4">冬
+                            @foreach ($allSeasons as $season)
+                                <input type="checkbox" name="season_id[]" value="{{ $season->id }}" @if (in_array($season->id, old('season_id', $product->seasons->pluck('id')->toArray()))) checked @endif>
+                                {{ $season->name }}
+                            @endforeach
                         </div>
                         <div class="form-error">
                             @error('check')
@@ -61,7 +64,7 @@
                     <div class="product-description">
                         <p class="input-label">商品説明</p>
                         <textarea name="description" value="{{ $product->description }}"
-                            placeholder="商品説明を入力">{{ $product->description }}</textarea>
+                            placeholder="商品説明を入力">{{ old('description',$product->description) }}</textarea>
                     </div>
                     <div class="form-error">
                         @error('description')
@@ -76,13 +79,31 @@
             <button class="form-button__submit" type="submit" value="submit">変更を保存</button>
         </div>
     </form>
-    <form class="delete-form" action="/product/{productID}/delete" method="post">
+    <form class="delete-form" action="{{ route('destroy', $product->id)}}" method="post">
         @csrf
         @method('delete')
         <div class="delete-button">
             <input type="hidden" name="id" value="{{ $product->id }}">
-            <input class="delete-button__submit" type="image" src="{{ asset('storage/app/public/img/trashbox.svg') }}">
+            <input class="delete-button__submit" type="image" src="{{ asset('storage/img/trashbox.png') }}">
         </div>
     </form>
 </div>
+
+<script>
+    document.getElementById('image-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const fileNameDisplay = document.getElementById('file-name');
+        const imagePreview = document.getElementById('preview-image');
+
+        fileNameDisplay.textContent = file ? file.name : '選択されていません';
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 @endsection

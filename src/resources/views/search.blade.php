@@ -11,11 +11,11 @@
     </div>
     <div class="content-main">
         <aside class="search">
-            <form class="search-form" action="{{ route('search') }}" method="post">
+            <form class="search-form" action="{{ route('search') }}" method="get">
                 @csrf
                 <div class="search-form__group">
                     <div class="search-form__item">
-                        <input class="search-form__item-input" type="text" name="keyword" value="{{ old('keyword') }}"
+                        <input class="search-form__item-input" type="text" name="keyword" value="{{ request('keyword') }}"
                             placeholder="商品名で検索">
                     </div>
                     <button class="search-form__button" type="submit">検索</button>
@@ -23,9 +23,8 @@
                 <h2>価格順で表示</h2>
                 <div class="sort-options">
                     <select class="sort-select" name="sort">
-                        <option value="">価格で並べ替え</option>
-                        <option value="asc">高い順に表示</option>
-                        <option value="desc">安い順に表示</option>
+                        <option value="asc" {{ request('sort') == 'asc' ? 'selcted' : '' }}>安い順に表示</option>
+                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>高い順に表示</option>
                     </select>
                 </div>
             </form>
@@ -34,9 +33,9 @@
             <div class="contetn-cards">
                 @foreach($products as $product)
                     <div class="content-card">
-                        <a class="content-card__link" href="{{ route('show', ['productId' => $product->id]) }}">
+                        <a class="content-card__link" href="{{ route('show', ['id' => $product->id]) }}">
                             <div class="content-card__img">
-                                <img src="{{ asset('storage/fruits-img' . $product->image) }}" alt="">
+                                <img src="{{ url('storage/img/fruit-img/' . $product->image) }}?v={{ time() }}" alt="{{ $product->name}}">
                             </div>
                             <div class="content-card__txt">
                                 <p>{{ $product->name }}</p>
@@ -46,7 +45,7 @@
                     </div>
                 @endforeach
             </div>
-            {{ $products->links() }}
+            {{ $products->links('vendor.pagination.default') }}
         </div>
     </div>
 </div>

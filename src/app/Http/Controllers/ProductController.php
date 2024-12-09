@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Season;
+use App\Models\ProductSeason;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Http\Requests\ProductRequest;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -29,6 +34,10 @@ class ProductController extends Controller
         $keyword = $request->input('keyword', '');
         $sort = $request->input('sort', 'asc');
 
+        if (!in_array($sort, ['asc', 'desc'])) {
+            $sort = 'asc';
+        }
+
         $products = Product::where(function($query) use ($keyword) {
             if (!empty($keyword)) {
                 $query->where('name', 'LIKE', "%{$keyword}%");
@@ -44,15 +53,25 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request, $id)
     {
-        $request->validate([
-            'image' => 'required|image|mimes:png,jpeg|max:2048',
-        ]);
-
         $path = $request->file('image')->store('img/fruit-img', 'public');
 
-        return back()->with('success', '画像がアップロードされました')->with('path', $path);
+        $product = Product::create([
+            'name' => $request->name,
+            'price' => $request->price,
+            'description' => $request->description,
+            'image' => basename($path),
+        ]);
+
+        foreach ($request->season_id as $seasonId) {
+            ProductSeason::create([
+                'product_id' => $product->id,
+                'season_id' => $seasonId,
+            ]);
+        }
+
+        return redirect('/products');
     }
 
     /**
@@ -63,11 +82,14 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $products = Product::find($productId);
+        $product = Product::with('seasons')->find($id);
         if (!$product) {
             return view('register');
         }
-        return view('show', compact('product'));
+
+        $allSeasons = Season::all();
+
+        return view('show', compact('product', 'allSeasons'));
     }
 
     /**
@@ -77,9 +99,35 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
+        $product = Product::findOrFail($id);
         
+        if ($request->hasFile('image')) {
+
+            $newImagePath = $request->file('image')->store('img/fruit-img', 'public');
+            $product->image = basename($newImagePath);
+        }
+
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price,
+            'description' => $request->description,
+            'image' => $product->image,
+        ]);
+
+        ProductSeason::where('product_id', $product->id)->delete();
+
+        if (!empty($request->season_id)) {
+            foreach ($request->season_id as $seasonId) {
+                ProductSeason::create([
+                    'product_id' => $product->id,
+                    'season_id' => $seasonId,
+                ]);
+            }
+        }
+
+        return redirect('/products');
     }
 
     /**
@@ -88,9 +136,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($productId)
+    public function destroy($id)
     {
-        $product = Product::find($productId);
+        $product = Product::find($id);
 
         if ($product) {
             $product->delete();

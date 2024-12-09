@@ -9,7 +9,8 @@
     <div class="content-header">
         <h1 class="content-title">商品登録</h1>
     </div>
-    <form class="form" action="/product/register" method="post" enctype="multipart/form-data">
+    <form class="form" action="{{ route('register') }}" method="post" enctype="multipart/form-data">
+        @csrf
         <div class="input-text">
             <div class="input-label">
                 <p class="label-name">商品名</p>
@@ -29,7 +30,7 @@
             </div>
             <input type="text" name="price" value="{{ old('price') }}" placeholder="値段を入力">
         </div>
-        <div clas="form-error">
+        <div class="form-error">
             @error('price')
                 {{ $message }}
             @enderror
@@ -37,19 +38,21 @@
         <div class="input-img">
             <div class="input-label">
                 <p class="label-name">商品画像</p>
-                <p class="required">必須</p>
+                <p class="label-required">必須</p>
             </div>
-            <input type="file" name="image" value="{{old('image')}}">
+
+            <img id="preview-image" src="#" alt="プレビュー" style="display:none; max-width: 300px; max-height: 300px; margin-bottom: 10px;">
+            <input id="image-upload" type="file" name="image" accept="image/*">
         </div>
         <div class="form-error">
-            @error('img')
+            @error('image')
                 {{ $message }}
             @enderror
         </div>
         <div class="input-check">
             <div class="input-label">
                 <p class="label-name">季節</p>
-                <p class="required">必須</p>
+                <p class="label-required">必須</p>
             </div>
             <div class="input-check__box">
                 <input type="checkbox" name="season_id[]" value="1">春
@@ -66,9 +69,9 @@
         <div class="input-area">
             <div class="input-label">
                 <p class="label-name">商品説明</p>
-                <p class="required">必須</p>
+                <p class="label-required">必須</p>
             </div>
-            <textarea name="description" value="{{ old('description') }}" placeholder="商品の説明を入力"></textarea>
+            <textarea name="description" placeholder="商品の説明を入力">{{ old('description') }}</textarea>
         </div>
         <div class="form-error">
             @error('description')
@@ -81,4 +84,21 @@
         </div>
     </form>
 </div>
+<script>
+    document.getElementById('image-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const previewImage = document.getElementById('preview-image');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.style.display = 'none';
+        }
+    });
+</script>
 @endsection
