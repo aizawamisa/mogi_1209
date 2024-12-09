@@ -20,7 +20,7 @@
 
 ## ER 図
 
-![ER図](https://github.com/aizawamisa/mogi_1209/raw/main/drawio.png)
+![ER図](https://github.com/aizawamisa/mogi_1209/raw/main/.drawio.png)
 
 ## URL
 
