@@ -22,10 +22,10 @@
 
 ![ER図](https://github.com/aizawamisa/mogi_1209/raw/main/.drawio.png)
 
-## 開発環境
+## URL
 
-- 開発環境: [http://localhost:8081/]
-- phpMyAdmin: [http://localhost:8080/]
+- 開発環境: http://localhost:8081/
+- phpMyAdmin: http://localhost:8080/
 
 ## 環境構築
 
@@ -65,5 +65,5 @@ $ php artisan storage:link
 
 ## 7. ディレクトリ権限の変更
 
-$ sudo chmod -R 775 storage  
+$ sudo chmod -R 775 storage
 $ sudo chmod -R 775 bootstrap/cache
