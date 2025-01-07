@@ -28,6 +28,16 @@
                     </select>
                 </div>
             </form>
+            @if(@isset($sort)&& $sort != "")
+                <div class="sort-contents">
+                    <p class="searched_data">{{$sort == 'asc' ? '安い順に表示' : ($sort == 'desc' ? '高い順に表示' : '')}}</p>
+                    <div class="close-content">
+                        <a href="/products">
+                            <img src="{{ asset('storage/img/close.png') }}" alt="閉じるアイコン" class="img-close-icon"/>
+                        </a>
+                    </div>
+                </div>
+            @endif
         </aside>
         <div class="content-item">
             <div class="contetn-cards">

@@ -28,7 +28,7 @@ class ProductRequest extends FormRequest
             'price' => 'required|integer|between:0,10000',
             'season_id' => 'required',
             'description' => 'required|max:120',
-            'image' => $this->isMethod('post') ?'required|mimes:jpeg,png' : 'nullable|mimes:jpeg,png',
+            'image' => $this->isMethod('post') ?'required|mimes:jpeg,png' : 'nullable|mimes:jpeg,png'
         ];
     }
 

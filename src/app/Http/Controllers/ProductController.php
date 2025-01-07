@@ -53,7 +53,7 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductRequest $request, $id)
+    public function store(ProductRequest $request)
     {
         $path = $request->file('image')->store('img/fruit-img', 'public');
 

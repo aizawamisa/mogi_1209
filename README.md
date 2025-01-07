@@ -4,13 +4,14 @@
 
 もぎたて
 
-## 使用技術
+## 使用技術（実行環境）
 
 | 言語・フレームワーク | バージョン |
 | -------------------- | ---------- |
 | Laravel Framework    | 8.83.8     |
 | PHP                  | 7.4.9      |
 | Docker               | 27.3.1     |
+| MySQL                | 8.0.40     |
 
 その他のパッケージのバージョンは composer.json を参照してください
 
@@ -29,41 +30,49 @@
 
 ## 環境構築
 
-## 1. リポジトリのクローンと Docker 起動
+## Docker ビルド
 
-### クローン
+### 1.クローン
 
-$ git clone https://github.com/aizawamisa/mogi_1209.git
+```git clone https://github.com/aizawamisa/mogi_1209.git```
 
-### Docker 起動
+### 2.Docker 起動
 
-$ docker compose up -d --build
+```docker compose up -d --build```
 
-### php コンテナに入る
+## Laravel 環境構築
 
-$docker compose exec php bash
+### 1.php コンテナに入る
 
-## 2. Composer のインストール
+```docker compose exec php bash```
 
-$ composer install
+### 2. Composer のインストール
 
-## 3. .env の作成、環境設定の記述
+```composer install```
 
-$ cp .env.local .env
+### 3. .env.example ファイルを.env ファイルに命名変更。または、新しく.env ファイルを作成
 
-## 4. アプリケーションキー作成
+### 4. .env に以下の環境変数を追加
 
-$ php artisan key:generate
+```DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=laravel_db
+DB_USERNAME=laravel_user
+DB_PASSWORD=laravel_pass```
 
-## 5. データベースの設定
+### 5. アプリケーションキー作成
 
-$ php artisan migrate --seed
+```php artisan key:generate```
 
-## 6. シンボリックリンクの作成
+### 6. マイグレーションの実行
 
-$ php artisan storage:link
+```php artisan migrate```
 
-## 7. ディレクトリ権限の変更
+### 7. シーディングの実行
 
-$ sudo chmod -R 775 storage
-$ sudo chmod -R 775 bootstrap/cache
+```php artisan migrate --seed```
+
+### 8. シンボリックリンクの作成
+
+```php artisan storage:link```
